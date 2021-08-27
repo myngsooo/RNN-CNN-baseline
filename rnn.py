@@ -12,7 +12,7 @@ class RNNClassifier(nn.Module):
         n_layers=4,
         dropout_p=.3,
     ):
-        self.input_size = input_size  # vocabulary_size
+        self.input_size = input_size
         self.word_vec_size = word_vec_size
         self.hidden_size = hidden_size
         self.n_classes = n_classes
@@ -31,16 +31,11 @@ class RNNClassifier(nn.Module):
             bidirectional=True,
         )
         self.generator = nn.Linear(hidden_size * 2, n_classes)
-        # We use LogSoftmax + NLLLoss instead of Softmax + CrossEntropy
         self.activation = nn.LogSoftmax(dim=-1)
 
     def forward(self, x):
-        # |x| = (batch_size, length)
         x = self.emb(x)
-        # |x| = (batch_size, length, word_vec_size)
         x, _ = self.rnn(x)
-        # |x| = (batch_size, length, hidden_size * 2)
         y = self.activation(self.generator(x[:, -1]))
-        # |y| = (batch_size, n_classes)
 
         return y
