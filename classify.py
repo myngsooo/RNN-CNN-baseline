@@ -85,7 +85,6 @@ def main(config):
     with torch.no_grad():
         ensemble = []
         if rnn_best is not None and not config.drop_rnn:
-            # Declare model and load pre-trained weights.
             model = RNNClassifier(
                 input_size=vocab_size,
                 word_vec_size=train_config.word_vec_size,
@@ -97,7 +96,6 @@ def main(config):
             model.load_state_dict(rnn_best)
             ensemble += [model]
         if cnn_best is not None and not config.drop_cnn:
-            # Declare model and load pre-trained weights.
             model = CNNClassifier(
                 input_size=vocab_size,
                 word_vec_size=train_config.word_vec_size,
@@ -111,34 +109,30 @@ def main(config):
             ensemble += [model]
 
         y_hats = []
-        # Get prediction with iteration on ensemble.
+        
         for model in ensemble:
             if config.gpu_id >= 0:
                 model.cuda(config.gpu_id)
-            # Don't forget turn-on evaluation mode.
             model.eval()
 
             y_hat = []
             for idx in range(0, len(lines), config.batch_size):                
-                # Converts string to list of index.
                 x = text_field.numericalize(
                     text_field.pad(lines[idx:idx + config.batch_size]),
                     device='cuda:%d' % config.gpu_id if config.gpu_id >= 0 else 'cpu',
                 )
 
                 y_hat += [model(x).cpu()]
-            # Concatenate the mini-batch wise result
+           
             y_hat = torch.cat(y_hat, dim=0)
-            # |y_hat| = (len(lines), n_classes)
+           
 
             y_hats += [y_hat]
 
             model.cpu()
-        # Merge to one tensor for ensemble result and make probability from log-prob.
+
         y_hats = torch.stack(y_hats).exp()
-        # |y_hats| = (len(ensemble), len(lines), n_classes)
-        y_hats = y_hats.sum(dim=0) / len(ensemble) # Get average
-        # |y_hats| = (len(lines), n_classes)
+        y_hats = y_hats.sum(dim=0) / len(ensemble) 
 
         probs, indice = y_hats.topk(config.top_k)
 
