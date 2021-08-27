@@ -4,11 +4,12 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from simple_ntc.trainer import Trainer
-from simple_ntc.data_loader import DataLoader
+# USE FILE_NAME
+from brightriver.trainer import Trainer
+from brightriver.data_loader import DataLoader
 
-from simple_ntc.models.rnn import RNNClassifier
-from simple_ntc.models.cnn import CNNClassifier
+from brightriver.models.rnn import RNNClassifier
+from brightriver.models.cnn import CNNClassifier
 
 
 def define_argparser():
@@ -70,7 +71,6 @@ def main(config):
         raise Exception('You need to specify an architecture to train. (--rnn or --cnn)')
 
     if config.rnn:
-        # Declare model and loss.
         model = RNNClassifier(
             input_size=vocab_size,
             word_vec_size=config.word_vec_size,
@@ -96,7 +96,6 @@ def main(config):
             loaders.valid_loader
         )
     if config.cnn:
-        # Declare model and loss.
         model = CNNClassifier(
             input_size=vocab_size,
             word_vec_size=config.word_vec_size,
