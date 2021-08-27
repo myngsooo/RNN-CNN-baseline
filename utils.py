@@ -5,9 +5,6 @@ def read_text(fn):
         labels, texts = [], []
         for line in lines:
             if line.strip() != '':
-                # The file should have tab delimited two columns.
-                # First column indicates label field,
-                # and second column indicates text field.
                 label, text = line.strip().split('\t')
                 labels += [label]
                 texts += [text]
