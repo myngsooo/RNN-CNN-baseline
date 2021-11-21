@@ -10,9 +10,7 @@ from brightriver.models.cnn import CNNClassifier
 
 
 def define_argparser():
-    '''
-    Define argument parser to take inference using pre-trained model.
-    '''
+
     p = argparse.ArgumentParser()
 
     p.add_argument('--model_fn', required=True)
@@ -43,10 +41,7 @@ def read_text(max_length=256):
 
 
 def define_field():
-    '''
-    To avoid use DataLoader class, just declare dummy fields. 
-    With those fields, we can retore mapping table between words and indice.
-    '''
+
     return (
         data.Field(
             use_vocab=True,
