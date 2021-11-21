@@ -13,9 +13,7 @@ from brightriver.models.cnn import CNNClassifier
 
 
 def define_argparser():
-    '''
-    Define argument parser to set hyper-parameters.
-    '''
+
     p = argparse.ArgumentParser()
 
     p.add_argument('--model_fn', required=True)
